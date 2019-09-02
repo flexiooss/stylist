@@ -10,15 +10,12 @@
   "peerDependencies": {
     "@flexio-oss/global-import-registry": ">0.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+
+  },
   "hotballoon-shed": {
     "build": {
-      "builder": "webpack4",
-      "entries": [
-        "./bootstrap.js"
-      ],
-      "html_template": "src/main/js/index.html",
-      "output": "./dist"
+      "builder": "webpack4"
     },
     "test": {
       "tester": "code-altimeter-js",
