@@ -1,4 +1,4 @@
-import {isNull} from '@flexio-oss/assert'
+import {isNull,assertType} from '@flexio-oss/assert'
 
 export class StyleSheetBuilder {
   /**
@@ -7,6 +7,7 @@ export class StyleSheetBuilder {
    */
   constructor(styleSheetMedia) {
     this.__element = document.createElement('style')
+    assertType
     /**
      *
      * @type {StyleSheetMedia}

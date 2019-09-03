@@ -1,11 +1,15 @@
 StyleSheetMedia:
   name: string
   medias:
-    $list : string
+    $value-object:
+      io.flexio.extended_flex_types.StringArray
 
 StyleRules:
   selector: string
   rules:
+    $list:
+      $value-object:
+        io.flexio.stylist.types.MediaRules
 
 MediaRules:
   media:
