@@ -1,4 +1,4 @@
-import {isNull,assertType} from '@flexio-oss/assert'
+import {isNull, assertType} from '@flexio-oss/assert'
 
 export class StyleSheetBuilder {
   /**
@@ -29,11 +29,13 @@ export class StyleSheetBuilder {
 
   __buildMedia() {
     if (!isNull(this.__styleSheetMedia)) {
-      this.__styleSheetMedia
-        .medias()
-        .forEach(value => {
-          this.__element.setAttribute('media', value)
-        })
+
+      this.__element.setAttribute(
+        'media',
+        this.__styleSheetMedia
+          .medias()
+          .join(' ')
+      )
     }
   }
 }
