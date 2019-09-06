@@ -83,7 +83,7 @@ export class Stylist {
   /**
    *
    * @param {Style} style
-   * @return {TokenizedStyle}
+   * @return {Style}
    */
   register(style) {
 

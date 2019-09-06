@@ -118,6 +118,48 @@ class Iterator {
   }
 }
 
+export class FakeCssLikeBuilder {
+
+  /**
+   *
+   * @param {string} selector
+   */
+  constructor(selector) {
+    assertType(
+      isString(selector),
+      'FakeCssLikeBuilder:constructor: `selector` argument should be a string'
+    )
+    /**
+     *
+     * @type {string}
+     * @private
+     */
+    this.__selector = selector
+
+  }
+
+  static selector(selector) {
+    return new FakeCssLikeBuilder(selector)
+  }
+
+  /**
+   *
+   * @return {FakeCssLikeBuilder}
+   */
+  rule() {
+    return this
+  }
+
+  /**
+   *
+   * @return {string}
+   */
+  build() {
+    return this.__selector
+  }
+
+}
+
 export class Style {
   /**
    *
@@ -210,12 +252,12 @@ export class Style {
   /**
    *
    * @param {string} selector
-   * @return {(CssLikeBuilder|string)}
+   * @return {(CssLikeBuilder|FakeCssLikeBuilder)}
    * @protected
    */
   _css(selector) {
     if (this._isRegistered()) {
-      return this[__selectors].get(selector)
+      return FakeCssLikeBuilder.selector(this[__selectors].get(selector))
     }
     return CssLikeBuilder
       .selector(selector)
