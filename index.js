@@ -29,3 +29,4 @@ deepKeyAssigner(globalFlexioImport, 'io.flexio.stylist.CssLikeBuilder', CssLikeB
 export {CssLikeBuilder}
 export {Stylist}
 export {Style}
+export {TypeCheck} from './src/js/TypeCheck'

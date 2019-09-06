@@ -1,23 +1,57 @@
 import {StyleSheetBuilder} from './StyleSheetBuilder'
-import {assertType} from '@flexio-oss/assert'
-import {Style, StyleWithToken} from './types/Style'
+import {assertType, isBoolean} from '@flexio-oss/assert'
+import {Style} from './types/Style'
 import {Tokenizer} from './Tokenizer'
+import {RegisterStyle} from './RegisterStyle'
+import {LoggerInterface} from '@flexio-oss/js-logger'
+import {TypeCheck} from './TypeCheck'
+
+const viewLogOptions = {
+  color: '#da9edf',
+  titleSize: 2
+}
 
 export class Stylist {
   /**
    *
+   * @param {LoggerInterface} logger
    * @param {StyleSheetMediaArray} styleSheetMediaArray
-   * @param {boolean} tokenOnly
+   * @param {boolean} obfuscateCssClass
    */
-  constructor(styleSheetMediaArray, tokenOnly = true) {
+  constructor(logger, styleSheetMediaArray, obfuscateCssClass = true) {
+    // assertType(
+    //   logger instanceof LoggerInterface,
+    //   'Stylist:constructor: `logger` argument should be an instance of LoggerInterface'
+    // )
+    /**
+     *
+     * @type {LoggerInterface}
+     * @private
+     */
+    this.__logger = logger
+
     /**
      *
      * @type {Map<string, StyleSheet>}
      * @private
      */
     this.__styleSheets = new Map()
-    this.__tokenOnly = tokenOnly
 
+    assertType(
+      isBoolean(obfuscateCssClass), '' +
+      'Stylist:constructor: `obfuscateCssClass` should be a boolean'
+    )
+    /**
+     *
+     * @type {boolean}
+     * @private
+     */
+    this.__obfuscateCssClass = obfuscateCssClass
+
+    assertType(
+      TypeCheck.isStyleSheetMediaArray(styleSheetMediaArray),
+      'Stylist:constructor: `styleSheetMediaArray` argument should be an instance of StyleSheetMediaArray'
+    )
     this.__buildStyleSheets(styleSheetMediaArray)
   }
 
@@ -33,86 +67,35 @@ export class Stylist {
           styleSheetMedia.name(),
           StyleSheetBuilder.build(styleSheetMedia)
         )
+
+        this.__logger.log(
+          this.__logger.builder()
+            .info()
+            .pushLog(this.constructor.name + ': StyleSheet added : ' + styleSheetMedia.name())
+            .pushLog(this.__styleSheets.get(styleSheetMedia.name())
+            ),
+          viewLogOptions
+        )
       })
+
   }
 
   /**
    *
    * @param {Style} style
-   * @return {Style}
+   * @return {TokenizedStyle}
    */
   register(style) {
-    assertType(
-      style instanceof Style,
-      'Stylist:register: `style` argument should be an instance of Style'
-    )
 
-    const inst = StyleWithToken.build(
-      style,
-      Tokenizer.checksumObject(style).toString()
-    )
-
-    this.__addToStyleSheet(inst)
-
-    return inst
-  }
-
-  /**
-   *
-   * @param {Style} style
-   * @private
-   */
-  __addToStyleSheet(style) {
-    for (/**     @type {Item}     */ let item of style) {
-      this.__addRules(style, item.value)
+    if (this.__obfuscateCssClass) {
+      return RegisterStyle.register(style, this.__styleSheets, (selector, styleToken) => {
+        return Tokenizer.obfuscateSelector(selector, styleToken)
+      })
+    } else {
+      return RegisterStyle.register(style, this.__styleSheets, (selector, styleToken) => {
+        return Tokenizer.selector(selector, styleToken)
+      })
     }
   }
 
-  /**
-   *
-   * @param {Style} style
-   * @param {StyleRules} styleRules
-   * @private
-   */
-  __addRules(style, styleRules) {
-    console.log(styleRules)
-
-    styleRules
-      .rules()
-      .forEach(
-        /**
-         *
-         * @param {MediaRules} mediaRules
-         */
-        mediaRules => {
-          const styleSheet = this.__styleSheets.get(mediaRules.media().name())
-          styleSheet.insertRule(
-            `${Tokenizer.selector(style, styleRules, this.__tokenOnly)} {${this.__rulesToString(mediaRules.rules())}}`,
-            styleSheet.cssRules.length
-          )
-          console.log(styleSheet)
-        }
-      )
-
-  }
-
-  /**
-   *
-   * @param {MediaRulesRulesList} mediaRulesRulesList
-   * @return {string}
-   * @private
-   */
-  __rulesToString(mediaRulesRulesList) {
-    let ret = ''
-    mediaRulesRulesList.forEach(
-      /**
-       *
-       * @param {Rule} rule
-       */
-      rule => {
-        ret += `${rule.property()}:${rule.value()};`
-      })
-
-    return ret
-  }
 }

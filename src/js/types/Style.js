@@ -1,5 +1,5 @@
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
-import {isNull, isFunction, assertType} from '@flexio-oss/assert'
+import {isNull, assertType} from '@flexio-oss/assert'
 
 const __index = Symbol('__index')
 const __length = Symbol('__length')
@@ -7,7 +7,7 @@ const __iterator = Symbol('__iterator')
 const __instance = Symbol('__instance')
 const __keys = Symbol('__keys')
 
-class Item {
+class ItemStyleRules {
   /**
    *
    * @param {string} property
@@ -56,7 +56,7 @@ class Iterator {
 
     if ((this[__index] < this[__length])) {
 
-      iteratorStatement.value = new Item(
+      iteratorStatement.value = new ItemStyleRules(
         this[__keys][this[__index]],
         this[__instance][this[__keys][this[__index]]]
       )
@@ -154,7 +154,7 @@ export class Style {
   toObject() {
     let jsonObject = {}
 
-    for (/**     @type {Item}     */    let a of this) {
+    for (/**     @type {ItemStyleRules}     */    let a of this) {
       jsonObject[a.property] = a.value
     }
 
