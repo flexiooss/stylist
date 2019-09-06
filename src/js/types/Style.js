@@ -1,11 +1,14 @@
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
-import {isNull, assertType} from '@flexio-oss/assert'
+import {isNull, assertType, isBoolean, isString} from '@flexio-oss/assert'
+import {CssLikeBuilder} from '../CssLikeBuilder'
 
 const __index = Symbol('__index')
 const __length = Symbol('__length')
 const __iterator = Symbol('__iterator')
 const __instance = Symbol('__instance')
 const __keys = Symbol('__keys')
+const __registered = Symbol('__registered')
+const __selectors = Symbol('__selectors')
 
 class ItemStyleRules {
   /**
@@ -122,6 +125,8 @@ export class Style {
    */
   constructor(token = '') {
     let iterator = new Iterator(this)
+    let registered = false
+    let selectors = new Map()
 
     Object.defineProperties(
       this,
@@ -135,6 +140,27 @@ export class Style {
           writable: false,
           value: token
         },
+        /**
+         * @private
+         * @property {Map<string, string>} this#__selectors
+         */
+        [__selectors]: {
+          configurable: false,
+          enumerable: false,
+          writable: false,
+          value: selectors
+        },
+        /**
+         * @private
+         * @property {boolean} Style#__registered
+         */
+        [__registered]: {
+          configurable: false,
+          enumerable: false,
+          writable: true,
+          value: registered
+
+        },
         [__iterator]: {
           configurable: false,
           enumerable: false,
@@ -144,8 +170,55 @@ export class Style {
     )
   }
 
+  /**
+   *
+   * @return {this}
+   */
+  registered() {
+    this[__registered] = true
+    return this
+  }
+
+  /**
+   *
+   * @return {boolean}
+   * @protected
+   */
+  _isRegistered() {
+    return !!this[__registered]
+  }
+
   [Symbol.iterator]() {
     return this[__iterator]
+  }
+
+  /**
+   *
+   * @param {string} key
+   * @param {string} value
+   * @return {this}
+   */
+  addSelector(key, value) {
+    assertType(
+      isString(key) && isString(value),
+      'Style:addSelector: `key` and `value` arguments should be strings'
+    )
+    this[__selectors].set(key, value)
+    return this
+  }
+
+  /**
+   *
+   * @param {string} selector
+   * @return {(CssLikeBuilder|string)}
+   * @protected
+   */
+  _css(selector) {
+    if (this._isRegistered()) {
+      return this[__selectors].get(selector)
+    }
+    return CssLikeBuilder
+      .selector(selector)
   }
 
   /**

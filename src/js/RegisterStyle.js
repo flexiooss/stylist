@@ -1,7 +1,6 @@
 import {assertType, isFunction} from '@flexio-oss/assert'
 import {Style, StyleWithToken} from './types/Style'
 import {RandomString} from '@flexio-oss/js-helpers'
-import {TokenizedStyle} from './types/TokenizedStyle'
 import {PropertyNameReservedException} from './types/PropertyNameReservedException'
 
 export class RegisterStyle {
@@ -47,57 +46,55 @@ export class RegisterStyle {
    * @param {Style} style
    * @param {Map<string, StyleSheet>} styleSheets
    * @param {function(string, string):string} selectorTokenizer
-   * @return {TokenizedStyle}
+   * @return {Style}
    */
   static register(style, styleSheets, selectorTokenizer) {
     const inst = new RegisterStyle(style, styleSheets, selectorTokenizer)
 
-    return inst.__addToStyleSheet(
-      inst.__tokenizeStyle(style)
-    )
+    return inst.__tokenizeStyle()
+      .__addToStyleSheet()
+      .__style
   }
 
   /**
    *
-   * @param {Style} style
-   * @return {Style}
+   * @return {this}
    * @private
    */
-  __tokenizeStyle(style) {
-    return StyleWithToken.build(
-      style,
+  __tokenizeStyle() {
+    this.__style = StyleWithToken.build(
+      this.__style,
       RandomString(4)
     )
+    return this
   }
 
   /**
    *
-   * @param {Style} style
-   * @return {TokenizedStyle}
+   * @return {this}
    * @private
    */
-  __addToStyleSheet(style) {
-    const tokenizedStyle = new TokenizedStyle(style)
+  __addToStyleSheet() {
 
-    for (/**     @type {ItemStyleRules}     */ let item of style) {
-      if (['style', 'isTypeOf'].indexOf(item.property) > 0) {
+    for (/**     @type {ItemStyleRules}     */ let item of this.__style) {
+      if (['addSelector', '_isRegistered', 'registered', '_css', 'toObject', 'toJSON'].indexOf(item.property) > 0) {
         throw PropertyNameReservedException.TOKENIZED_STYLE_RESERVED(item.property)
       }
 
-      tokenizedStyle[item.property] = this.__addRules(style, item.value)
+      this.__style.addSelector(item.value.selector(), this.__addRules(item.value))
     }
-    return tokenizedStyle
+    this.__style.registered()
+    return this
   }
 
   /**
    *
-   * @param {Style} style
    * @param {StyleRules} styleRules
    * @return {string}
    * @private
    */
-  __addRules(style, styleRules) {
-    const selector = this.__selectorTokenizer(styleRules.selector(), style.token)
+  __addRules(styleRules) {
+    const selector = this.__selectorTokenizer(styleRules.selector(), this.__style.token)
 
     styleRules
       .rules()
