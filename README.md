@@ -7,6 +7,7 @@ Create DOM stylesheets for every ordered media, and register styles.
 ```javascript
 import {StylistBuilder} from '@flexio-oss/stylist'
 // or globalFlexioImport.io.flexio.stylist.types.StylistBuilder
+
 /**
 *
 * @type {Stylist}
@@ -16,6 +17,7 @@ const stylist = new StylistBuilder()
     .addStyleSheetMedia(styleSheetMediaMobile)
     .addStyleSheetMedia(styleSheetMediaDesktop)
     .addStyleSheetMedia(styleSheetMediaPrint)
+    .obfuscateCssClass(true)
     .build()
 
 /**
@@ -31,6 +33,8 @@ const myBorderStyle = stylist.register(new BorderStyle())
 ```
 
 ## StyleSheetMedia
+Object for describe Media Queries.
+
  ```javascript
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
 
@@ -49,6 +53,7 @@ const styleSheetMediaPrint = new globalFlexioImport.io.flexio.stylist.types.Styl
 ```
 
 ## Style
+Css file like, object for specify css rules by selector for every styleSheetMedia.
 
 ```javascript
 import {Style} from '@flexio-oss/stylist'
