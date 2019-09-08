@@ -3,7 +3,7 @@ import {globalFlexioImport} from '@flexio-oss/global-import-registry'
 import {deepKeyAssigner} from '@flexio-oss/js-generator-helpers'
 import {StyleSheetMediaArrayBuilder} from './src/js/types/StyleSheetMediaArray'
 import {Style} from './src/js/types/Style'
-import {Stylist} from './src/js/Stylist'
+import {Stylist, StylistBuilder} from './src/js/Stylist'
 import {CssLikeBuilder} from './src/js/CssLikeBuilder'
 
 /**
@@ -20,6 +20,10 @@ deepKeyAssigner(globalFlexioImport, 'io.flexio.stylist.types.Style', Style)
  * @property {Stylist} globalFlexioImport.io.flexio.stylist.Stylist
  */
 deepKeyAssigner(globalFlexioImport, 'io.flexio.stylist.Stylist', Stylist)
+/**
+ * @property {StylistBuilder} globalFlexioImport.io.flexio.stylist.StylistBuilder
+ */
+deepKeyAssigner(globalFlexioImport, 'io.flexio.stylist.StylistBuilder', StylistBuilder)
 
 /**
  * @property {CssLikeBuilder} globalFlexioImport.io.flexio.stylist.CssLikeBuilder
@@ -27,6 +31,6 @@ deepKeyAssigner(globalFlexioImport, 'io.flexio.stylist.Stylist', Stylist)
 deepKeyAssigner(globalFlexioImport, 'io.flexio.stylist.CssLikeBuilder', CssLikeBuilder)
 
 export {CssLikeBuilder}
-export {Stylist}
+export {Stylist, StylistBuilder}
 export {Style}
 export {TypeCheck} from './src/js/TypeCheck'

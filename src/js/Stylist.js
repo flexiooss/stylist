@@ -1,10 +1,12 @@
 import {StyleSheetBuilder} from './StyleSheetBuilder'
+import {StyleSheetMediaArray} from './types/StyleSheetMediaArray'
 import {assertType, isBoolean} from '@flexio-oss/assert'
 import {Style} from './types/Style'
 import {Tokenizer} from './Tokenizer'
 import {RegisterStyle} from './RegisterStyle'
 import {LoggerInterface} from '@flexio-oss/js-logger'
 import {TypeCheck} from './TypeCheck'
+import {AlreadyRegisteredException} from './AlreadyRegisteredException'
 
 const viewLogOptions = {
   color: '#da9edf',
@@ -84,8 +86,12 @@ export class Stylist {
    *
    * @param {Style} style
    * @return {Style}
+   * @throws {AlreadyRegisteredException, PropertyNameReservedException}
    */
   register(style) {
+    if (style.isRegistered()) {
+      throw AlreadyRegisteredException.STYLE_REGISTERED()
+    }
 
     if (this.__obfuscateCssClass) {
       return RegisterStyle.register(style, this.__styleSheets, (selector, styleToken) => {
@@ -98,4 +104,49 @@ export class Stylist {
     }
   }
 
+}
+
+export class StylistBuilder {
+  constructor() {
+    this.__logger = null
+    this.__styleSheetMediaArray = new StyleSheetMediaArray()
+  }
+
+  /**
+   *
+   * @param {LoggerInterface} logger
+   * @return {StylistBuilder}
+   */
+  logger(logger) {
+    this.__logger = logger
+    return this
+  }
+
+  /**
+   *
+   * @param {StyleSheetMediaArray} styleSheetMediaArray
+   * @return {StylistBuilder}
+   */
+  styleSheetMediaArray(styleSheetMediaArray) {
+    this.__styleSheetMediaArray = styleSheetMediaArray
+    return this
+  }
+
+  /**
+   *
+   * @param {StyleSheetMedia} styleSheetMedia
+   * @return {StylistBuilder}
+   */
+  addStyleSheetMedia(styleSheetMedia) {
+    this.__styleSheetMediaArray.push(styleSheetMedia)
+    return this
+  }
+
+  /**
+   *
+   * @return {Stylist}
+   */
+  build(){
+    return new Stylist(this.__logger, this.__styleSheetMediaArray)
+  }
 }

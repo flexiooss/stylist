@@ -1,6 +1,7 @@
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
 import {isNull, assertType, isBoolean, isString} from '@flexio-oss/assert'
 import {CssLikeBuilder} from '../CssLikeBuilder'
+import {deepFreezeSeal} from '@flexio-oss/js-generator-helpers'
 
 const __index = Symbol('__index')
 const __length = Symbol('__length')
@@ -118,7 +119,10 @@ class Iterator {
   }
 }
 
-export class FakeCssLikeBuilder {
+/**
+ * @implements {CssRulesBuilder}
+ */
+class FakeCssLikeBuilder {
 
   /**
    *
@@ -138,6 +142,11 @@ export class FakeCssLikeBuilder {
 
   }
 
+  /**
+   *
+   * @param {string} selector
+   * @return {FakeCssLikeBuilder}
+   */
   static selector(selector) {
     return new FakeCssLikeBuilder(selector)
   }
@@ -218,20 +227,16 @@ export class Style {
    */
   registered() {
     this[__registered] = true
+    deepFreezeSeal(this)
     return this
   }
 
   /**
    *
    * @return {boolean}
-   * @protected
    */
-  _isRegistered() {
+  isRegistered() {
     return !!this[__registered]
-  }
-
-  [Symbol.iterator]() {
-    return this[__iterator]
   }
 
   /**
@@ -256,7 +261,7 @@ export class Style {
    * @protected
    */
   _css(selector) {
-    if (this._isRegistered()) {
+    if (this.isRegistered()) {
       return FakeCssLikeBuilder.selector(this[__selectors].get(selector))
     }
     return CssLikeBuilder
@@ -281,6 +286,10 @@ export class Style {
    */
   toJSON() {
     return this.toObject()
+  }
+
+  [Symbol.iterator]() {
+    return this[__iterator]
   }
 
 }

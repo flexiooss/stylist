@@ -39,6 +39,9 @@ class Item {
   }
 }
 
+/**
+ * @implements {CssRulesBuilder}
+ */
 export class CssLikeBuilder {
 
   /**
@@ -64,6 +67,11 @@ export class CssLikeBuilder {
     this.__rules = []
   }
 
+  /**
+   *
+   * @param {string} selector
+   * @return {CssLikeBuilder}
+   */
   static selector(selector) {
     return new CssLikeBuilder(selector)
   }
@@ -87,6 +95,10 @@ export class CssLikeBuilder {
     return this
   }
 
+  /**
+   *
+   * @return {StyleRules}
+   */
   build() {
     return new globalFlexioImport.io.flexio.stylist.types.StyleRulesBuilder()
       .selector(this.__selector)
