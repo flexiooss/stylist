@@ -20,11 +20,11 @@ export class Stylist {
    * @param {StyleSheetMediaArray} styleSheetMediaArray
    * @param {boolean} obfuscateCssClass
    */
-  constructor(logger, styleSheetMediaArray, obfuscateCssClass = true) {
-    // assertType(
-    //   logger instanceof LoggerInterface,
-    //   'Stylist:constructor: `logger` argument should be an instance of LoggerInterface'
-    // )
+  constructor(logger, styleSheetMediaArray, obfuscateCssClass) {
+    assertType(
+      logger instanceof LoggerInterface,
+      'Stylist:constructor: `logger` argument should be an instance of LoggerInterface'
+    )
     /**
      *
      * @type {LoggerInterface}
@@ -110,6 +110,7 @@ export class StylistBuilder {
   constructor() {
     this.__logger = null
     this.__styleSheetMediaArray = new StyleSheetMediaArray()
+    this.__obfuscateCssClass = true
   }
 
   /**
@@ -144,9 +145,19 @@ export class StylistBuilder {
 
   /**
    *
+   * @param {boolean} value
+   * @return {StylistBuilder}
+   */
+  obfuscateCssClass(value) {
+    this.__obfuscateCssClass = value
+    return this
+  }
+
+  /**
+   *
    * @return {Stylist}
    */
-  build(){
-    return new Stylist(this.__logger, this.__styleSheetMediaArray)
+  build() {
+    return new Stylist(this.__logger, this.__styleSheetMediaArray, this.__obfuscateCssClass)
   }
 }
