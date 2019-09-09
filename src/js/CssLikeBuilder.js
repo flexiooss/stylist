@@ -1,5 +1,6 @@
 import {assertType, isObject, isString} from '@flexio-oss/assert'
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
+import {Selector} from './types/Selector'
 
 class Item {
   /**
@@ -73,7 +74,12 @@ export class CssLikeBuilder {
    * @return {CssLikeBuilder}
    */
   static selector(selector) {
-    return new CssLikeBuilder(selector)
+    const selectorInst = new Selector(selector)
+
+    return new CssLikeBuilder(
+      selectorInst.validate()
+        .selector
+    )
   }
 
   /**

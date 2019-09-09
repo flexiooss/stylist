@@ -2,6 +2,7 @@ import {globalFlexioImport} from '@flexio-oss/global-import-registry'
 import {isNull, assertType, isBoolean, isString} from '@flexio-oss/assert'
 import {CssLikeBuilder} from '../CssLikeBuilder'
 import {deepFreezeSeal} from '@flexio-oss/js-generator-helpers'
+import {SelectorException} from './SelectorException'
 
 const __index = Symbol('__index')
 const __length = Symbol('__length')
@@ -15,12 +16,12 @@ class ItemStyleRules {
   /**
    *
    * @param {string} property
-   * @param {StyleRules} value
+   * @param {(StyleRules, string)} value
    */
   constructor(property, value) {
     assertType(
-      value instanceof globalFlexioImport.io.flexio.stylist.types.StyleRules,
-      'Item:constructor: `value` argument should be StyleRules'
+      value instanceof globalFlexioImport.io.flexio.stylist.types.StyleRules || isString(value),
+      'Item:constructor: `value` argument should be StyleRules or string if Style is registered'
     )
 
     this.__property = property
@@ -37,7 +38,7 @@ class ItemStyleRules {
 
   /**
    *
-   * @return {StyleRules}
+   * @return {(StyleRules, string)}
    */
   get value() {
     return this.__value
@@ -262,6 +263,9 @@ export class Style {
    */
   _css(selector) {
     if (this.isRegistered()) {
+      if (!this[__selectors].has(selector)) {
+        throw SelectorException.NOT_REGISTERED_SELECTOR(selector)
+      }
       return FakeCssLikeBuilder.selector(this[__selectors].get(selector))
     }
     return CssLikeBuilder
