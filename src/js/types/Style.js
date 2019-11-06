@@ -171,11 +171,8 @@ class FakeCssLikeBuilder {
 }
 
 export class Style {
-  /**
-   *
-   * @param {string} token
-   */
-  constructor(token = '') {
+
+  constructor() {
     let iterator = new Iterator(this)
     let registered = false
     let selectors = new Map()
@@ -183,15 +180,6 @@ export class Style {
     Object.defineProperties(
       this,
       {
-        /**
-         * @property {string} Style#token
-         */
-        token: {
-          configurable: false,
-          enumerable: false,
-          writable: false,
-          value: token
-        },
         /**
          * @private
          * @property {Map<string, string>} this#__selectors
@@ -220,6 +208,33 @@ export class Style {
         }
       }
     )
+  }
+
+  /**
+   *
+   * @param {string} token
+   * @return {Style}
+   */
+  setToken(token) {
+    assertType(
+      isString(token),
+      'Style:setToken: `token` arguments should be string'
+    )
+    Object.defineProperties(
+      this,
+      {
+        /**
+         * @property {string} Style#token
+         */
+        token: {
+          configurable: false,
+          enumerable: false,
+          writable: false,
+          value: token
+        }
+      }
+    )
+    return this
   }
 
   /**
@@ -310,6 +325,6 @@ export class StyleWithToken {
       style instanceof Style,
       'StyleWithToken:build: `style` argument should be an instance of Style'
     )
-    return new style.constructor(token)
+    return style.setToken(token)
   }
 }
