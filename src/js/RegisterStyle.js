@@ -78,7 +78,7 @@ export class RegisterStyle {
   __addToStyleSheet() {
 
     for (/**     @type {ItemStyleRules}     */ let item of this.__style) {
-      if (['addSelector', 'isRegistered', 'registered', '_css', 'toObject', 'toJSON'].indexOf(item.property) > 0) {
+      if (['addSelector', 'setToken', 'isRegistered', 'registered', '_css', 'toObject', 'toJSON'].indexOf(item.property) > 0) {
         throw PropertyNameReservedException.TOKENIZED_STYLE_RESERVED(item.property)
       }
 
