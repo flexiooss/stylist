@@ -1,6 +1,7 @@
-import {assertType, isObject, isString} from '@flexio-oss/assert'
+import {assertType, isArray, isObject, isString} from '@flexio-oss/assert'
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
-import {Selector} from './types/Selector'
+// import {Selector} from './types/Selector'
+import {TypeCheck} from '@flexio-oss/flex-types'
 
 class Item {
   /**
@@ -47,19 +48,23 @@ export class CssLikeBuilder {
 
   /**
    *
-   * @param {string} selector
+   * @param {string[]} selectors
    */
-  constructor(selector) {
+  constructor(selectors) {
+
     assertType(
-      isString(selector),
-      'CssLikeBuilder:constructor: `selector` argument should be a string'
+      isArray(selectors),
+      'CssLikeBuilder:constructor: `selectors` argument should be a array'
     )
+    if (!TypeCheck.isStringArray(selectors)) {
+      selectors = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray(...selectors)
+    }
     /**
      *
-     * @type {string}
+     * @type {StringArray}
      * @private
      */
-    this.__selector = selector
+    this.__selectors = selectors
     /**
      *
      * @type {Array.<Item>}
@@ -70,16 +75,13 @@ export class CssLikeBuilder {
 
   /**
    *
-   * @param {string} selector
+   * @param {string[]} selectors
    * @return {CssLikeBuilder}
    */
-  static selector(selector) {
-    const selectorInst = new Selector(selector)
+  static selectors(selectors) {
+    // const selectorInst = new Selector(selectors)
 
-    return new CssLikeBuilder(
-      selectorInst.validate()
-        .selector
-    )
+    return new CssLikeBuilder(selectors)
   }
 
   /**
@@ -107,7 +109,7 @@ export class CssLikeBuilder {
    */
   build() {
     return new globalFlexioImport.io.flexio.stylist.types.StyleRulesBuilder()
-      .selector(this.__selector)
+      .selectors(this.__selectors)
       .rules(
         new globalFlexioImport.io.flexio.stylist.types.stylerules.StyleRulesRulesList(
           ...this.__styleRulesRulesList()

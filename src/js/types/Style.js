@@ -1,8 +1,9 @@
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
-import {isNull, assertType, isBoolean, isString} from '@flexio-oss/assert'
+import {isNull, assertType, isBoolean, isString, isArray} from '@flexio-oss/assert'
 import {CssLikeBuilder} from '../CssLikeBuilder'
 import {deepFreezeSeal} from '@flexio-oss/js-generator-helpers'
 import {SelectorException} from './SelectorException'
+import {TypeCheck} from '@flexio-oss/flex-types'
 
 const __index = Symbol('__index')
 const __length = Symbol('__length')
@@ -21,7 +22,7 @@ class ItemStyleRules {
   constructor(property, value) {
     assertType(
       value instanceof globalFlexioImport.io.flexio.stylist.types.StyleRules || isString(value),
-      'ButtonItemElement:constructor: `value` argument should be StyleRules or string if Style is registered'
+      'Item:constructor: `value` argument should be StyleRules or string if Style is registered'
     )
 
     this.__property = property
@@ -124,32 +125,33 @@ class Iterator {
  * @implements {CssRulesBuilder}
  */
 class FakeCssLikeBuilder {
-
   /**
    *
-   * @param {string} selector
+   * @param {string} selectors
    */
-  constructor(selector) {
+  constructor(selectors) {
+
     assertType(
-      isString(selector),
-      'FakeCssLikeBuilder:constructor: `selector` argument should be a string'
+      isString(selectors),
+      'FakeCssLikeBuilder:constructor: `selectors` argument should be a string'
     )
+
     /**
      *
      * @type {string}
      * @private
      */
-    this.__selector = selector
+    this.__selectors = selectors
 
   }
 
   /**
    *
-   * @param {string} selector
+   * @param {string} selectors
    * @return {FakeCssLikeBuilder}
    */
-  static selector(selector) {
-    return new FakeCssLikeBuilder(selector)
+  static selectors(selectors) {
+    return new FakeCssLikeBuilder(selectors)
   }
 
   /**
@@ -165,7 +167,7 @@ class FakeCssLikeBuilder {
    * @return {string}
    */
   build() {
-    return this.__selector
+    return this.__selectors
   }
 
 }
@@ -272,19 +274,22 @@ export class Style {
 
   /**
    *
-   * @param {string} selector
+   * @param {string[]} selectors
    * @return {(CssLikeBuilder|FakeCssLikeBuilder)}
    * @protected
    */
-  _css(selector) {
+  _css(selectors) {
+    if (!TypeCheck.isStringArray(selectors)) {
+      selectors = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray(...selectors)
+    }
     if (this.isRegistered()) {
-      if (!this[__selectors].has(selector)) {
-        throw SelectorException.NOT_REGISTERED_SELECTOR(selector)
+      if (!this[__selectors].has(selectors.join(','))) {
+        throw SelectorException.NOT_REGISTERED_SELECTOR(selectors)
       }
-      return FakeCssLikeBuilder.selector(this[__selectors].get(selector))
+      return FakeCssLikeBuilder.selectors(this[__selectors].get(selectors.join(',')))
     }
     return CssLikeBuilder
-      .selector(selector)
+      .selectors(selectors)
   }
 
   /**

@@ -2,6 +2,7 @@ import {assertType, isFunction} from '@flexio-oss/assert'
 import {Style, StyleWithToken} from './types/Style'
 import {RandomString} from '@flexio-oss/js-helpers'
 import {PropertyNameReservedException} from './types/PropertyNameReservedException'
+import {globalFlexioImport} from '@flexio-oss/global-import-registry'
 
 export class RegisterStyle {
   /**
@@ -82,7 +83,7 @@ export class RegisterStyle {
         throw PropertyNameReservedException.TOKENIZED_STYLE_RESERVED(item.property)
       }
 
-      this.__style.addSelector(item.value.selector(), this.__addRules(item.value))
+      this.__style.addSelector(item.value.selectors().join(','), this.__addRules(item.value))
     }
     this.__style.registered()
     return this
@@ -95,7 +96,12 @@ export class RegisterStyle {
    * @private
    */
   __addRules(styleRules) {
-    const selector = this.__selectorTokenizer(styleRules.selector(), this.__style.token)
+    const selectors = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray()
+    for (const selector of styleRules.selectors()) {
+      selectors.push(this.__selectorTokenizer(selector, this.__style.token))
+    }
+
+    const tokenizedSelectors = selectors.join(',')
 
     styleRules
       .rules()
@@ -108,12 +114,12 @@ export class RegisterStyle {
           const styleSheet = this.__styleSheets.get(mediaRules.media().name())
 
           styleSheet.insertRule(
-            `${selector} {${this.__rulesToString(mediaRules.rules())}}`,
+            `${tokenizedSelectors} {${this.__rulesToString(mediaRules.rules())}}`,
             styleSheet.cssRules.length
           )
         }
       )
-    return selector
+    return tokenizedSelectors
   }
 
   /**

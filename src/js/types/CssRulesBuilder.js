@@ -5,10 +5,10 @@ export class CssRulesBuilder {
 
   /**
    *
-   * @param {string} selector
+   * @param {string[]} selector
    * @return {CssRulesBuilder}
    */
-  static selector(selector) {
+  static selectors(selectors) {
   }
 
   /**
