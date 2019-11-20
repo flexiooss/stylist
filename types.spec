@@ -5,7 +5,9 @@ StyleSheetMedia:
       io.flexio.extended_flex_types.StringArray
 
 StyleRules:
-  selector: string
+  selectors:
+    $value-object:
+      io.flexio.flex_types.arrays.StringArray
   rules:
     $list:
       $value-object:

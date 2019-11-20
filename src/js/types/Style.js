@@ -21,7 +21,7 @@ class ItemStyleRules {
   constructor(property, value) {
     assertType(
       value instanceof globalFlexioImport.io.flexio.stylist.types.StyleRules || isString(value),
-      'Item:constructor: `value` argument should be StyleRules or string if Style is registered'
+      'ButtonItemElement:constructor: `value` argument should be StyleRules or string if Style is registered'
     )
 
     this.__property = property
