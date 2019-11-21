@@ -1,4 +1,4 @@
-import {assertType, isArray, isObject, isString} from '@flexio-oss/assert'
+import {assertType, isArray, isObject, isString, TypeCheck as PrimitiveTypeCheck} from '@flexio-oss/assert'
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
 // import {Selector} from './types/Selector'
 import {TypeCheck} from '@flexio-oss/flex-types'
@@ -52,10 +52,8 @@ export class CssLikeBuilder {
    */
   constructor(selectors) {
 
-    assertType(
-      isArray(selectors),
-      'CssLikeBuilder:constructor: `selectors` argument should be a array'
-    )
+    PrimitiveTypeCheck.assertIsArray(selectors)
+
     if (!TypeCheck.isStringArray(selectors)) {
       selectors = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray(...selectors)
     }
@@ -79,8 +77,6 @@ export class CssLikeBuilder {
    * @return {CssLikeBuilder}
    */
   static selectors(selectors) {
-    // const selectorInst = new Selector(selectors)
-
     return new CssLikeBuilder(selectors)
   }
 
@@ -90,15 +86,13 @@ export class CssLikeBuilder {
    * @param {Object.<string, string>} rules
    * @return {CssLikeBuilder}
    */
-  rule(styleSheetMedia, rules) {
+  styleSheetMediaRules(styleSheetMedia, rules) {
     assertType(
       styleSheetMedia instanceof globalFlexioImport.io.flexio.stylist.types.StyleSheetMedia,
       'CssLikeBuilder:rule: `styleSheetMedia` argument should be an instance of StyleSheetMedia'
     )
-    assertType(
-      isObject(rules),
-      'CssLikeBuilder:rule: `rules` argument should be an Object.<string, string>'
-    )
+    PrimitiveTypeCheck.assertIsObject(rules)
+
     this.__rules.push(new Item(styleSheetMedia, rules))
     return this
   }

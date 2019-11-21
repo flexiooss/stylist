@@ -1,7 +1,6 @@
 import {assertType, isFunction} from '@flexio-oss/assert'
 import {Style, StyleWithToken} from './types/Style'
 import {RandomString} from '@flexio-oss/js-helpers'
-import {PropertyNameReservedException} from './types/PropertyNameReservedException'
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
 
 export class RegisterStyle {
@@ -73,35 +72,44 @@ export class RegisterStyle {
   /**
    *
    * @return {this}
-   * @throws {PropertyNameReservedException}
    * @private
    */
   __addToStyleSheet() {
 
-    for (/**     @type {ItemStyleRules}     */ let item of this.__style) {
-      if (['addSelector', 'setToken', 'isRegistered', 'registered', '_css', 'toObject', 'toJSON'].indexOf(item.property) > 0) {
-        throw PropertyNameReservedException.TOKENIZED_STYLE_RESERVED(item.property)
-      }
+    this.__style.forEachStyles(
+      /**
+       *
+       * @param {StyleRules} styleRules
+       */
+      (styleRules) => {
 
-      this.__style.addSelector(item.value.selectors().join(','), this.__addRules(item.value))
-    }
-    this.__style.registered()
+        const tokenizedSelectors = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray()
+
+        styleRules.selectors()
+          .forEach(
+            selector => {
+              const tokenisedSelector = this.__selectorTokenizer(selector, this.__style.token)
+              this.__style.addSelectorTokenized(selector, tokenisedSelector)
+              tokenizedSelectors.push(tokenisedSelector)
+            })
+
+        this.__addRules(tokenizedSelectors, styleRules)
+
+      }
+    )
+
+    this.__style.register()
     return this
   }
 
   /**
    *
+   * @param {StringArray} tokenizedSelectors
    * @param {StyleRules} styleRules
    * @return {string}
    * @private
    */
-  __addRules(styleRules) {
-    const selectors = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray()
-    for (const selector of styleRules.selectors()) {
-      selectors.push(this.__selectorTokenizer(selector, this.__style.token))
-    }
-
-    const tokenizedSelectors = selectors.join(',')
+  __addRules(tokenizedSelectors, styleRules) {
 
     styleRules
       .rules()
@@ -114,7 +122,7 @@ export class RegisterStyle {
           const styleSheet = this.__styleSheets.get(mediaRules.media().name())
 
           styleSheet.insertRule(
-            `${tokenizedSelectors} {${this.__rulesToString(mediaRules.rules())}}`,
+            `${tokenizedSelectors.join(',')} {${this.__rulesToString(mediaRules.rules())}}`,
             styleSheet.cssRules.length
           )
         }
