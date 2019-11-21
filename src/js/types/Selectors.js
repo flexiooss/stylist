@@ -1,34 +1,29 @@
 import {SelectorException} from './SelectorException'
-import {assertType} from '@flexio-oss/assert'
+import {assertType, TypeCheck as PrimitiveTypeCheck} from '@flexio-oss/assert'
 import {TypeCheck} from '@flexio-oss/flex-types'
 
-export class Selectors {
+export class Selector {
+
+  /**
+   *
+   * @param {string} selector
+   */
+  static assertSingleSelector(selector) {
+    PrimitiveTypeCheck.assertIsString(selector)
+    if (RegExp('[,]').test(selector)) {
+      SelectorException.IS_MULTIPLE(selector)
+    }
+  }
+
   /**
    *
    * @param {StringArray} selectors
    */
-  constructor(selectors) {
+  static joinedSelectors(selectors) {
     assertType(
       TypeCheck.isStringArray(selectors),
-      `${this.constructor.name}: 'selectors' should be StringArray`
+      `'selectors' should be StringArray`
     )
-    /**
-     *
-     * @type {StringArray}
-     * @private
-     */
-    this.__selectors = selectors
-  }
-
-  /**
-   *
-   * @return {StringArray}
-   */
-  get selectors() {
-    return this.__selectors
-  }
-
-  joinedSelectors() {
-    return this.__selectors.join(',')
+    return selectors.join(',')
   }
 }

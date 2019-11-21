@@ -1,9 +1,9 @@
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
-import { assertType, isBoolean, isString,  TypeCheck as PrimitiveTypeCheck} from '@flexio-oss/assert'
+import {assertType, TypeCheck as PrimitiveTypeCheck} from '@flexio-oss/assert'
 import {CssLikeBuilder} from '../CssLikeBuilder'
 import {deepFreezeSeal} from '@flexio-oss/js-generator-helpers'
 import {SelectorException} from './SelectorException'
-
+import {Selector} from './Selectors'
 
 const __registered = Symbol('__registered')
 const __selectors = Symbol('__selectors')
@@ -102,8 +102,8 @@ export class Style {
    * @return {Style}
    */
   addSelectorTokenized(selector, selectorTokenized) {
-    PrimitiveTypeCheck.assertIsString(selector)
-    PrimitiveTypeCheck.assertIsString(selectorTokenized)
+    Selector.assertSingleSelector(selector)
+    Selector.assertSingleSelector(selectorTokenized)
 
     this[__selectors].set(selector, selectorTokenized)
     return this
@@ -166,13 +166,13 @@ export class Style {
 
   /**
    *
-   * @param {string} selectors
+   * @param {string} selector
    * @return {string}
    * @protected
    */
   _selector(selector) {
 
-    PrimitiveTypeCheck.assertIsString(selector)
+    Selector.assertSingleSelector(selector)
 
     if (this.isRegistered()) {
       if (!this[__selectors].has(selector)) {

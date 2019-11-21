@@ -1,6 +1,5 @@
-import {assertType, isArray, isObject, isString, TypeCheck as PrimitiveTypeCheck} from '@flexio-oss/assert'
+import {assertType, TypeCheck as PrimitiveTypeCheck} from '@flexio-oss/assert'
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
-// import {Selector} from './types/Selector'
 import {TypeCheck} from '@flexio-oss/flex-types'
 
 class Item {

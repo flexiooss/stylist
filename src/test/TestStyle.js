@@ -6,7 +6,7 @@ import {styleSheetMediaAll, styleSheetMediaPrint} from './TestStyleSheetMedia'
  */
 export class ColorStyle extends globalFlexioImport.io.flexio.stylist.types.Style {
 
-  get colorAlert() {
+   colorAlert() {
     return this._css('.color-main')
       .rule(
         styleSheetMediaAll,
@@ -23,7 +23,7 @@ export class ColorStyle extends globalFlexioImport.io.flexio.stylist.types.Style
       .build()
   }
 
-  get colorInfo() {
+   colorInfo() {
     return this._css('.color-info')
       .rule(
         styleSheetMediaAll,
@@ -48,18 +48,10 @@ export class ColorStyle extends globalFlexioImport.io.flexio.stylist.types.Style
 export class BadStyle extends globalFlexioImport.io.flexio.stylist.types.Style {
   constructor() {
     super()
-    this.notIterableTo = null
   }
 
-  notIterable() {
-    return
-  }
 
-  set otherNotIterable(v) {
-    this.otherNotIterable = v
-  }
-
-  get colorAlert() {
+   colorAlert() {
     return this._css('.color-main')
       .rule(
         styleSheetMediaAll,
@@ -76,7 +68,7 @@ export class BadStyle extends globalFlexioImport.io.flexio.stylist.types.Style {
       .build()
   }
 
-  get colorInfo() {
+   colorInfo() {
     return this._css('.color-info')
       .rule(
         styleSheetMediaAll,
@@ -101,7 +93,7 @@ export class BadStyle extends globalFlexioImport.io.flexio.stylist.types.Style {
 export class BadSelectorStyle extends globalFlexioImport.io.flexio.stylist.types.Style {
 
 
-  get colorAlert() {
+   colorAlert() {
     return this._css('.color-main, div')
       .rule(
         styleSheetMediaAll,

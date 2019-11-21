@@ -2,6 +2,7 @@ import {assertType, isFunction} from '@flexio-oss/assert'
 import {Style, StyleWithToken} from './types/Style'
 import {RandomString} from '@flexio-oss/js-helpers'
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
+import {Selector} from './types/Selectors'
 
 export class RegisterStyle {
   /**
@@ -106,7 +107,6 @@ export class RegisterStyle {
    *
    * @param {StringArray} tokenizedSelectors
    * @param {StyleRules} styleRules
-   * @return {string}
    * @private
    */
   __addRules(tokenizedSelectors, styleRules) {
@@ -122,12 +122,12 @@ export class RegisterStyle {
           const styleSheet = this.__styleSheets.get(mediaRules.media().name())
 
           styleSheet.insertRule(
-            `${tokenizedSelectors.join(',')} {${this.__rulesToString(mediaRules.rules())}}`,
+            `${Selector.joinedSelectors(tokenizedSelectors)} {${this.__rulesToString(mediaRules.rules())}}`,
             styleSheet.cssRules.length
           )
         }
       )
-    return tokenizedSelectors
+
   }
 
   /**
