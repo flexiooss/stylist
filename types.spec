@@ -8,17 +8,14 @@ StyleRules:
     $list: string
   rules:
     $list:
-      $value-object:
-        io.flexio.stylist.types.MediaRules
+      $value-object: io.flexio.stylist.types.MediaRules
 
 MediaRules:
   media:
-    $value-object:
-      io.flexio.stylist.types.StyleSheetMedia
+    $value-object: io.flexio.stylist.types.StyleSheetMedia
   rules:
     $list:
-      $value-object:
-        io.flexio.stylist.types.Rule
+      $value-object: io.flexio.stylist.types.Rule
 
 Rule:
   property: string
