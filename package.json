@@ -1,6 +1,6 @@
 {
   "name": "@flexio-oss/stylist",
-  "version": "0.1.0",
+  "version": "0.2.0-dev",
   "main": "index.js",
   "repository": "git@github.com:flexiooss/stylist.git",
   "author": "Thomas Chatelain (https://github.com/TomAchT)",
