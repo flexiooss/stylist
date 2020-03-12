@@ -1,6 +1,6 @@
 {
   "name": "@flexio-oss/stylist",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "main": "index.js",
   "repository": "git@github.com:flexiooss/stylist.git",
   "author": "Thomas Chatelain (https://github.com/TomAchT)",
@@ -12,7 +12,7 @@
     "@flexio-oss/assert": ">0.0.0"
   },
   "dependencies": {
-    "@flexio-corp/js-common-parent": "0.0.0"
+    "@flexio-corp/js-common-parent": "0.1.0"
   },
   "hotballoon-shed": {
     "build": {

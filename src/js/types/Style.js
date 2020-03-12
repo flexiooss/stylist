@@ -67,7 +67,7 @@ export class Style {
       this,
       {
         /**
-         * @property {string} Style#token
+         * @property {string} Style#externalChooserPublic
          */
         token: {
           configurable: false,

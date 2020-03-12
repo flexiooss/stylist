@@ -104,8 +104,8 @@ export class CssLikeBuilder {
     return new globalFlexioImport.io.flexio.stylist.types.StyleRulesBuilder()
       .selectors(this.__selectors)
       .rules(
-        new globalFlexioImport.io.flexio.stylist.types.stylerules.StyleRulesRulesList(
-          ...this.__styleRulesRulesList()
+        new globalFlexioImport.io.flexio.stylist.types.MediaRulesList(
+          ...this.__mediaRulesList()
         )
       )
       .build()
@@ -115,7 +115,7 @@ export class CssLikeBuilder {
    * @return {Array.<MediaRules>}
    * @private
    */
-  __styleRulesRulesList() {
+  __mediaRulesList() {
     const ret = []
     this.__rules.forEach(
       /**
@@ -127,8 +127,8 @@ export class CssLikeBuilder {
           new globalFlexioImport.io.flexio.stylist.types.MediaRulesBuilder()
             .media(item.styleSheetMedia)
             .rules(
-              new globalFlexioImport.io.flexio.stylist.types.mediarules.MediaRulesRulesList(
-                ...this.__mediaRulesRulesList(item.rules)
+              new globalFlexioImport.io.flexio.stylist.types.RuleList(
+                ...this.__ruleList(item.rules)
               )
             )
             .build()
@@ -141,7 +141,7 @@ export class CssLikeBuilder {
    * @return {Array.<Rule>}
    * @private
    */
-  __mediaRulesRulesList(rules) {
+  __ruleList(rules) {
     const ret = []
 
     Object.keys(rules).forEach((k, i) => {
